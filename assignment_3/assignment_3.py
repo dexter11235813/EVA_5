@@ -57,7 +57,14 @@ test_set = datasets.EMNIST(
     train=False,
     download=True,
     split="byclass",
-    transform=transforms.Compose([transforms.ToTensor()]),
+    transform=transforms.Compose(
+        [
+            transforms.RandomRotation(10),
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomVerticalFlip(),
+            transforms.ToTensor(),
+        ]
+    ),
 )
 train_loader = torch.utils.data.DataLoader(train_set, batch_size=32, shuffle=True)
 test_loader = torch.utils.data.DataLoader(test_set, batch_size=32, shuffle=True)
