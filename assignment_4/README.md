@@ -1,5 +1,7 @@
 Final validation accuracy for this model within 20 epochs :- 99.52 % 
+
 Maximum validation accuracy for this model within 20 epochs :- 99.57 % 
+
 Number of parameters in the model :- 19,298
 
 
@@ -11,6 +13,4 @@ The model attains a validation accuracy of 99.41 % in the 8th epoch and remains 
 
 
 I experimented with a few transforms (`RandomRotation()`, `RandomHorizontalFlip()`, `RandomVerticalFlip()` etc), but got the best validation score with just the `ToTensor()` and `Normalize()`. I was also able to score 99.53 % validation accuracy with a smaller model containing 14,074 parameters.
-
-
 
