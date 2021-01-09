@@ -1,5 +1,8 @@
 import torch.nn as nn
 import torch.nn.functional as F
+import torch
+
+# Original code :- https://github.com/apple/ml-cifar-10-faster/blob/master/utils.py
 
 
 class BatchNorm(nn.BatchNorm2d):

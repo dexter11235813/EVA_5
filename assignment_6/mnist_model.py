@@ -33,3 +33,11 @@ class Net(nn.Module):
         x = self.mnist_classifier(x)
         x = x.view(-1, 10)
         return log_softmax(x, dim=-1)
+
+
+# if __name__ == "__main__":
+#     from torchsummary import summary
+
+#     x = Net(ghost_norm=True).to("cuda")
+#     print(summary(x, input_size=(1, 28, 28)))
+
