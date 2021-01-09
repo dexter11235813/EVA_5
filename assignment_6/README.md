@@ -10,7 +10,7 @@ This week's assignment is to take the best assignment from last week, and experi
 <h2 align = 'center'>  Results </h2>
 
 The val
-![](images/summary_plot_for_runs_accuracy.png)
+![Accuracy Curves for all 5 experiments](images/summary_plot_for_runs_accuracy.png)
 <h2 align = 'center'>  Analysis </h2>
 
 ## Trials
