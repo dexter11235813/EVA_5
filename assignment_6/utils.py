@@ -2,6 +2,7 @@ from numpy import pi, floor, ceil, sqrt
 import matplotlib.pyplot as plt
 import torch
 import config
+import sys
 
 
 class Record:
@@ -20,16 +21,6 @@ def adjust_lr(optimizer, epoch):
         param_group["lr"] = lr
 
 
-# def l1_loss(y_pred, target):
-#     loss = torch.nn.functional.nll_loss(y_pred, target)
-
-#     l1 = 0
-#     for p in model.parameters():
-#         l1 = l1 + p.abs().sum()
-#     loss = loss + 5e-4 * l1
-#     return loss
-
-
 def plot_misclassified(number, trial, test_loader, device, save_path="./images"):
     images, predicted, actual = trial.Trainer.get_misclassified_imgs(
         test_loader, device
@@ -37,7 +28,7 @@ def plot_misclassified(number, trial, test_loader, device, save_path="./images")
     nrows = int(floor(sqrt(number)))
     ncols = int(ceil(sqrt(number)))
     save_path = f"{save_path}/{trial.name}"
-    fig, ax = plt.subplots(nrows, ncols, figsize=(10, 15))
+    fig, ax = plt.subplots(nrows, ncols, figsize=(20, 15))
 
     for i in range(nrows):
         for j in range(ncols):
@@ -47,7 +38,7 @@ def plot_misclassified(number, trial, test_loader, device, save_path="./images")
                 f"Predicted: {predicted[index]},\nActual : {actual[index]}"
             )
             ax[i, j].axis("off")
-            ax[i, j].imshow(images[index].cpu().numpy())  # , cmap="gray_r")
+            ax[i, j].imshow(images[index].cpu().numpy())
 
     fig.savefig(save_path, bbox_inches="tight")
     print(f"Misclassified plot for {trial.name} saved at {save_path}")
@@ -58,21 +49,32 @@ def plot_curves_for_trials(*trials):
     train_acc = [trial.Record.train_acc for trial in trials]
     test_loss = [trial.Record.test_loss for trial in trials]
     test_acc = [trial.Record.test_acc for trial in trials]
-    data = [train_loss, train_acc, test_loss, test_acc]
-    legends = [trial.name for trial in trials]
-    titles = ["Train loss", "Train accuracy", "Test loss", "Test accuracy"]
+    data_acc = [train_acc, test_acc]
+    data_loss = [train_loss, test_loss]
 
-    fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(20, 15))
+    legends = [trial.name for trial in trials]
+    titles_loss = ["Train loss", "Test loss"]
+    titles_acc = ["Train accuracy", "Test accuracy"]
+
+    fig1, ax1 = plt.subplots(nrows=2, ncols=1, figsize=(20, 15))
+    fig2, ax2 = plt.subplots(nrows=2, ncols=1, figsize=(20, 15))
 
     for i in range(2):
-        for j in range(2):
-            ind = i * 2 + j
-            ax[i, j].set_title(titles[ind])
+        ax1[i].set_title(titles_loss[i])
 
-            for k, legend in enumerate(legends):
-                ax[i, j].plot(data[ind][k], label=legend)
+        for k, legend in enumerate(legends):
+            ax1[i].plot(data_loss[i][k], label=legend)
 
-            ax[i, j].legend()
+        ax1[i].legend()
 
-    fig.savefig(config.SUMMARY_FOR_RUNS, bbox_inches="tight")
+    for j in range(2):
+        ax2[j].set_title(titles_acc[j])
+
+        for k, legend in enumerate(legends):
+            ax2[j].plot(data_acc[j][k], label=legend)
+
+        ax2[j].legend()
+
+    fig1.savefig(config.SUMMARY_LOSS, bbox_inches="tight")
+    fig2.savefig(config.SUMMARY_ACC, bbox_inches="tight")
 

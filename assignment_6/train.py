@@ -6,7 +6,7 @@ import utils
 
 tqdm = partial(tqdm, position=0, leave=True)
 
-
+# Contains train, evaluation code, as well as code for identifying misclassified images
 class Trainer:
     def __init__(self, model):
         self.model = model
@@ -89,7 +89,7 @@ class Trainer:
         self.test_acc.append(100.0 * correct / len(test_loader.dataset))
 
         print(
-            f" Test loss = {test_loss * 1.0 / len(test_loader.dataset)}, Test Accuracy : {100.0 * correct / len(test_loader.dataset)}"
+            f" Test loss = {test_loss}, Test Accuracy : {100.0 * correct / len(test_loader.dataset)}"
         )
 
     def get_misclassified_imgs(self, test_loader, device):
@@ -125,14 +125,17 @@ class Trainer:
         return mis, mis_pred, mis_target
 
 
-class Experiment:
-    def __init__(self, name, model, train_args):
+# Entry point to the Trainer class
+class Trial:
+    def __init__(self, name, model, args):
         self.name = name
         self.model = model
-        self.train_args = train_args
         self.Record = None
         self.Trainer = Trainer(model)
+        self.args = args
 
     def run(self):
-        print("=> Running experiment:", self.name)
-        self.Record = self.Trainer.train(**self.train_args)
+        print(
+            f"Running trial: {self.name} with batch_size = {self.args['train_loader'].batch_size}"
+        )
+        self.Record = self.Trainer.train(**self.args)

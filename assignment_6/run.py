@@ -7,7 +7,7 @@ import torch
 
 
 def create_trial(
-    name, loss_fn, model_use_gbn=False, weight_decay=False, l1_penalty=False
+    name, loss_fn, batch_size, model_use_gbn=False, weight_decay=False, l1_penalty=False
 ):
     model = mnist_model.Net(ghost_norm=model_use_gbn).to(config.DEVICE)
     optimizer = (
@@ -17,21 +17,21 @@ def create_trial(
         if weight_decay
         else torch.optim.Adam(model.parameters(), lr=config.INIT_LR)
     )
-
-    experiment = train.Experiment(
+    train_loader, test_loader = dataloader.get_iterators(batch_size=batch_size)
+    tr = train.Trial(
         name=name,
         model=model,
-        train_args={
+        args={
             "EPOCHS": config.EPOCHS,
-            "train_loader": dataloader.train_loader,
-            "test_loader": dataloader.test_loader,
+            "train_loader": train_loader,
+            "test_loader": test_loader,
             "optimizer": optimizer,
             "device": config.DEVICE,
             "loss_fn": loss_fn,
             "l1_penalty": l1_penalty,
         },
     )
-    return experiment
+    return tr
 
 
 if __name__ == "__main__":
@@ -39,6 +39,7 @@ if __name__ == "__main__":
     trial_1 = create_trial(
         "L1_with_BN",
         torch.nn.functional.nll_loss,
+        config.BATCH_SIZE_BN,
         model_use_gbn=False,
         weight_decay=False,
         l1_penalty=True,
@@ -46,6 +47,7 @@ if __name__ == "__main__":
     trial_2 = create_trial(
         "L2_with_BN",
         torch.nn.functional.nll_loss,
+        config.BATCH_SIZE_BN,
         model_use_gbn=False,
         weight_decay=True,
         l1_penalty=False,
@@ -53,6 +55,7 @@ if __name__ == "__main__":
     trial_3 = create_trial(
         "L1_and_L2_with_BN",
         torch.nn.functional.nll_loss,
+        config.BATCH_SIZE_BN,
         model_use_gbn=False,
         weight_decay=True,
         l1_penalty=True,
@@ -60,6 +63,7 @@ if __name__ == "__main__":
     trial_4 = create_trial(
         "GBN",
         torch.nn.functional.nll_loss,
+        config.BATCH_SIZE_GBN,
         model_use_gbn=True,
         weight_decay=False,
         l1_penalty=False,
@@ -67,6 +71,7 @@ if __name__ == "__main__":
     trial_5 = create_trial(
         "L1_and_L2_with_GBN",
         torch.nn.functional.nll_loss,
+        config.BATCH_SIZE_GBN,
         model_use_gbn=True,
         weight_decay=True,
         l1_penalty=True,
@@ -77,6 +82,8 @@ if __name__ == "__main__":
         trial.run()
 
     print("finished Run")
-    utils.plot_misclassified(25, trial_4, dataloader.test_loader, device=config.DEVICE)
+    utils.plot_misclassified(
+        25, trial_4, trial_4.args["test_loader"], device=config.DEVICE
+    )
     utils.plot_curves_for_trials(*trials)
     print("Done!!")
