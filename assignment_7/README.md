@@ -28,9 +28,9 @@ The first Conv block contains 2 regular convolution layers with a 3x3 kernel, wi
 
 The second Conv block contains 2 Atrous Convolution layers, with dialation set to 2. Atrous convolutions help capturing global context by performing convolutions over a larger area on the channels. This block should theoretically be placed first, but I got better results after placing it second. 
 
-The third Conv block contains 2 Depthwise separable convolution layers. Depthwise Separable convolution allows similar performance as compared to regular convolutions, but with fewer number of parameters. 
+The third Conv block contains 3 Depthwise separable convolution layers. Depthwise Separable convolution allows similar performance as compared to regular convolutions, but with fewer number of parameters. 
 
-Using `torch.nn.functional.nll_loss()` as my loss function, `SGD` as the optimizer and pytorch's `OneCycleLR` policy, the model was able to clear the target of 80% validation accuracy in the 10th epoch, and the final validation accuracy at the end of the 20th epoch was `86.07%`. 
+Using `torch.nn.functional.nll_loss()` as my loss function, `SGD` as the optimizer and pytorch's `OneCycleLR` policy, the model was able to clear the target of 80% validation accuracy in the 11th epoch, and the final validation accuracy at the end of the 20th epoch was `84.95%`. 
 
 
 <h2 align = 'center'>  Results </h2>

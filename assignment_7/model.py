@@ -9,6 +9,7 @@ from torchsummary import summary
 tqdm = partial(tqdm, position=0, leave=True)
 
 
+# generates conv blocks with the following two configs : Conv->Relu->BN->Dropout | DepthWiseSeparableConv->Relu->BN->Dropout
 def conv_block(
     num_layers,
     in_channel,
@@ -52,6 +53,7 @@ def conv_block(
     return nn.Sequential(*module_list), in_channel
 
 
+# Transition block contains MaxPooling + 1x1 Conv2d kernel to reduce the number of channels
 def transition_block(in_channel, out_channel, other_layers=True):
     if out_channel > in_channel:
         raise ValueError(
@@ -73,6 +75,7 @@ def transition_block(in_channel, out_channel, other_layers=True):
     return nn.Sequential(*output)
 
 
+# DepthwiseSeparable Convolution is a grouped Convolution operation followed by a 1x1 convolution
 class DepthWiseSeparableConv(nn.Module):
     def __init__(self, in_channels, out_channels, padding=1):
         super().__init__()
@@ -129,7 +132,7 @@ class CIFARNet(nn.Module):
         )
 
         self.conv_block3, final_out_conv_3 = conv_block(
-            num_layers=2,
+            num_layers=3,
             in_channel=first_layer_output_size,
             kernel_size=3,
             padding=1,
@@ -143,10 +146,16 @@ class CIFARNet(nn.Module):
 
     def forward(self, x):
 
-        x = self.first_block(x)
-        x = self.trans_block1(self.conv_block1(x))
-        x = self.trans_block2(self.conv_block2(x))
-        x = self.trans_block3(self.conv_block3(x))
+        x = self.first_block(x)  # RF = 3, output_shape : [batch_size, 3, 32, 32]
+        x = self.trans_block1(
+            self.conv_block1(x)
+        )  # RF = 8, output_shape : [batch_size, 32, 16, 16]
+        x = self.trans_block2(
+            self.conv_block2(x)
+        )  # RF = 26 , output_shape : [batch_size, 32, 6, 6]
+        x = self.trans_block3(
+            self.conv_block3(x)
+        )  # RF = 50, output_shape : [batch_size, 10, 3, 3]
         x = self.GAP(x).view(-1, self.num_classes)
         return F.log_softmax(x, dim=1)
 
@@ -250,3 +259,8 @@ class Trial:
 
     def run(self):
         self.Record = self.Trainer.train(**self.args)
+
+
+if __name__ == "__main__":
+    x = CIFARNet(first_layer_output_size=config.FIRST_LAYER_OUTPUT_SIZE, num_classes=10)
+    print(x)
