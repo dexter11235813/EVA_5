@@ -20,8 +20,6 @@ This week's assignment is to train a model to achieve > 80% percent validation a
 
 <h2 align = 'center'>  Model Architecture </h2>
 
-<img width="100%" src="./images/model_architecture.png">
-
 The model is composed of three distinct Convolutional Blocks, with intermediary transition blocks that perfrom max pooling and 1x1 conv operation to reduce the number of kernels from the previous block to 32.
 
 The first Conv block contains 2 regular convolution layers with a 3x3 kernel, with padding set to 1. Each convolution layer was followed by a `nn.ReLU`, `nn.BatchNorm2d` and `nn.Dropout` layers. This convolutional block takes in a tensor of size `[batch_size, 32, 32, 32]`, and returns a tensor of size `[batch_size, 128, 32, 32]`
