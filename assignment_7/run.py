@@ -6,18 +6,18 @@ from model import CIFARNet, Trainer, Trial
 from torch.optim.lr_scheduler import OneCycleLR
 
 if __name__ == "__main__":
-    model = CIFARNet(
+    net = CIFARNet(
         first_layer_output_size=config.FIRST_LAYER_OUTPUT_SIZE,
         num_classes=config.NUM_CLASSES,
     ).to(config.DEVICE)
     criterion = nn.functional.nll_loss
-    optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+    optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9)
     scheduler = OneCycleLR(optimizer, max_lr=0.5, total_steps=20)
     train_loader, test_loader = data_loader.get_iterators()
 
     run = Trial(
         name="first_run",
-        model=model,
+        model=net,
         args={
             "epochs": config.EPOCH,
             "train_loader": train_loader,
