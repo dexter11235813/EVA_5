@@ -23,7 +23,7 @@ def get_images(train_loader, num_images=10):
         ax.set_title(str(config.CLASSES[labels[i].item()]))
 
 
-##### Code from here-on borrowed from Assignment 6 submission
+##### Code from here-on borrowed is from the submission made for assignment 6
 def get_images_by_classification(model, test_loader, device, misclassified=True):
 
     mis = []
