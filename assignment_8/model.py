@@ -191,7 +191,7 @@ class Trainer:
                 enumerate(test_loader), total=len(test_loader)
             ):
                 data, target = data.to(config.DEVICE), target.to(config.DEVICE)
-                output = self.model(data)
+                output = F.log_softmax(self.model(data), dim=1)
                 test_loss += torch.nn.functional.nll_loss(
                     output, target, reduction="sum"
                 ).item()  # sum up batch loss
