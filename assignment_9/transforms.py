@@ -10,7 +10,7 @@ class TrainTransforms:
             [
                 albumentations.HorizontalFlip(),
                 albumentations.Rotate(2),
-                albumentations.Cutout(num_holes=3),
+                albumentations.Cutout(num_holes=1),
                 albumentations.Normalize(
                     mean=[0.4914, 0.48216, 0.44653], std=[0.2023, 0.1994, 0.2010]
                 ),
