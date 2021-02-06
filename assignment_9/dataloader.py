@@ -8,11 +8,11 @@ def get_iterators(batch_size=config.BATCH_SIZE):
     train_transforms = TrainTransforms()
     test_transforms = TestTransforms()
     trainset = torchvision.datasets.CIFAR10(
-        root="./data", train=True, download=False, transform=train_transforms
+        root="./data", train=True, download=True, transform=train_transforms
     )
 
     testset = torchvision.datasets.CIFAR10(
-        root="./data", train=False, download=False, transform=test_transforms
+        root="./data", train=False, download=True, transform=test_transforms
     )
 
     train_loader = torch.utils.data.DataLoader(
