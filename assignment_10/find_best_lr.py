@@ -18,6 +18,7 @@ def find_best_lr(use_val_loader=False):
     else:
         lr_finder.range_test(train_loader, val_loader=test_loader, end_lr=0.1)
     lr_finder.plot(log_lr=False)
+    lr_finder.reset()
 
 
 # scheduler = OneCycleLR(optimizer, max_lr=0.1, total_steps=20)
