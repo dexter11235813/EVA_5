@@ -149,9 +149,9 @@ class Trainer:
             print(f"{epoch + 1} / {epochs}")
 
             self._train(train_loader, optimizer, device, loss_fn)
-            self._evaluate(test_loader, loss_fn)
+            test_loss = self._evaluate(test_loader, loss_fn)
             if scheduler:
-                scheduler.step()
+                scheduler.step(test_loss)
 
         return Record(self.train_acc, self.train_loss, self.test_acc, self.test_loss)
 
@@ -206,6 +206,7 @@ class Trainer:
         print(
             f" Test loss = {test_loss}, Test Accuracy : {100.0 * correct / len(test_loader.dataset)}"
         )
+        return test_loss
 
 
 class Trial:
