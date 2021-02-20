@@ -30,6 +30,38 @@ def grad_cam(imgs, model, layer):
     return images
 
 
+def modified_plot_grad_cam(
+    number, model, test_loader, device, misclassified=True, save_path="./images"
+):
+    images, predicted, actual = get_images_by_classification(
+        model, test_loader, device, misclassified
+    )
+    nrows = number
+    ncols = number
+    if misclassified:
+        save_path = f"{save_path}/misclassified_images_cam.png"
+    else:
+        save_path = f"{save_path}/correctly_classified_images_cam.png"
+
+    cam_imgs = grad_cam(images[0:number], model, "layer4")
+    cam_imgs = cam_imgs[2::3]
+    fig, ax = plt.subplots(nrows, ncols, figsize=(20, 15))
+
+    for i in range(nrows):
+        for j in range(ncols):
+            index = i * ncols + j
+            ax[i, j].set_title(
+                f"Predicted: {config.CLASSES[predicted[index]]},\nActual : {config.CLASSES[actual[index]]}"
+            )
+
+            ax[i, j].axis("off")
+
+            ax[i, j].imshow(clip(transpose(array(cam_imgs[index]), (1, 2, 0)), 0, 1))
+
+    fig.savefig(save_path, bbox_inches="tight")
+    print(f"plot saved at {save_path}")
+
+
 def plot_grad_cam(
     number, model, test_loader, device, misclassified=True, save_path="./images"
 ):
