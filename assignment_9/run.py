@@ -7,7 +7,7 @@ from torch.optim.lr_scheduler import OneCycleLR
 
 if __name__ == "__main__":
     net = ResNet18().to(config.DEVICE)
-    criterion = nn.functional.nll_loss
+    criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
     scheduler = OneCycleLR(optimizer, max_lr=0.1, total_steps=20)
     train_loader, test_loader = dataloader.get_iterators()
