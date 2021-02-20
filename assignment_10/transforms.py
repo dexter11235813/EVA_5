@@ -8,6 +8,7 @@ class TrainTransforms:
     def __init__(self):
         self.train_transforms = albumentations.Compose(
             [
+                albumentations.RandomCrop(32, padding=4),
                 albumentations.HorizontalFlip(),
                 albumentations.Rotate(2),
                 albumentations.Cutout(num_holes=1),

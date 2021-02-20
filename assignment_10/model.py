@@ -147,7 +147,8 @@ class Trainer:
     ):
         for epoch in range(epochs):
             print(f"{epoch + 1} / {epochs}")
-
+            clr = optimizer.param_groups[0]["lr"]
+            print(f"current_lr: {clr}")
             self._train(train_loader, optimizer, device, loss_fn)
             test_loss = self._evaluate(test_loader, loss_fn)
             if scheduler:
