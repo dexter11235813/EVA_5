@@ -55,7 +55,6 @@ def modified_plot_grad_cam(
             )
 
             ax[i, j].axis("off")
-            print(index)
             ax[i, j].imshow(clip(transpose(array(cam_imgs[index]), (1, 2, 0)), 0, 1))
 
     fig.savefig(save_path, bbox_inches="tight")
