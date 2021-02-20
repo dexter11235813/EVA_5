@@ -43,7 +43,7 @@ def modified_plot_grad_cam(
     else:
         save_path = f"{save_path}/correctly_classified_images_cam_{number}_images.png"
 
-    cam_imgs = grad_cam.grad_cam(images[0:number], model, "layer4")
+    cam_imgs = grad_cam(images[0:number], model, "layer4")
     cam_imgs = cam_imgs[2::3]
     fig, ax = plt.subplots(nrows, ncols, figsize=(20, 15))
 
