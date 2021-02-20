@@ -14,7 +14,7 @@ def find_best_lr():
     lr_finder = LRFinder(net, optimizer, criterion, device=config.DEVICE)
     train_loader, test_loader = dataloader.get_iterators()
 
-    lr_finder.range_test(train_loader, end_lr=1)
+    lr_finder.range_test(train_loader, end_lr=0.1)
     lr_finder.plot(log_lr=False)
 
 
