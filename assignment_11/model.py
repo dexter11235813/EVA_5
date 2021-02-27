@@ -117,6 +117,7 @@ class Trainer:
         optimizer,
         loss_fn,
         scheduler=None,
+        batch_scheduler=True,
         device=config.DEVICE,
     ):
         for epoch in range(epochs):
@@ -124,7 +125,11 @@ class Trainer:
             clr = optimizer.param_groups[0]["lr"]
             print(f"current_lr: {clr}")
             self.LR.append(clr)
-            self._train(train_loader, optimizer, device, loss_fn)
+            if batch_scheduler:
+                self._train(train_loader, optimizer, device, loss_fn)
+            else:
+                print("passing scheduler inside _train...")
+                self._train(train_loader, optimizer, device, loss_fn, scheduler)
             test_loss = self._evaluate(test_loader, loss_fn)
             if scheduler:
                 if scheduler.__name__ == "ReduceLROnPlateau":
@@ -134,7 +139,7 @@ class Trainer:
 
         return Record(self.train_acc, self.train_loss, self.test_acc, self.test_loss)
 
-    def _train(self, train_loader, optimizer, device, loss_fn):
+    def _train(self, train_loader, optimizer, loss_fn, scheduler=None):
         self.model.train()
         correct = 0
         train_loss = 0
@@ -149,7 +154,8 @@ class Trainer:
             train_loss += loss.detach()
             loss.backward()
             optimizer.step()
-
+            if scheduler:
+                scheduler.step()
             pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
 
