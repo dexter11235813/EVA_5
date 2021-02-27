@@ -118,7 +118,6 @@ class Trainer:
         loss_fn,
         scheduler=None,
         batch_scheduler=True,
-        device=config.DEVICE,
     ):
         for epoch in range(epochs):
             print(f"{epoch + 1} / {epochs}")
@@ -126,10 +125,10 @@ class Trainer:
             print(f"current_lr: {clr}")
             self.LR.append(clr)
             if batch_scheduler:
-
+                print("passing scheduler inside _train...")
                 self._train(train_loader, optimizer, loss_fn)
             else:
-                print("passing scheduler inside _train...")
+
                 self._train(train_loader, optimizer, loss_fn, scheduler)
             test_loss = self._evaluate(test_loader, loss_fn)
             if scheduler:
