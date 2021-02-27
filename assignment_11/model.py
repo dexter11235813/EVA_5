@@ -134,6 +134,8 @@ class Trainer:
             if scheduler:
                 if scheduler.__class__.__name__ == "ReduceLROnPlateau":
                     scheduler.step(test_loss)
+                elif scheduler.__class__.__name__ == "OneCycleLR":
+                    pass
                 else:
                     scheduler.step()
 
