@@ -89,7 +89,7 @@ class CustomNet(nn.Module):
         x = self.final_pool(x)
         x = self.flatten(x)
         x = x.view(-1, 10)
-        return x
+        return F.log_softmax(x)
 
 
 class Record:
@@ -166,7 +166,7 @@ class Trainer:
                 enumerate(test_loader), total=len(test_loader)
             ):
                 data, target = data.to(config.DEVICE), target.to(config.DEVICE)
-                output = F.log_softmax(self.model(data), dim=1)
+                output = self.model(data)
                 test_loss += torch.nn.functional.nll_loss(
                     output, target, reduction="sum"
                 ).item()  # sum up batch loss
