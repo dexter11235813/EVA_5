@@ -135,6 +135,7 @@ class Trainer:
                 if scheduler.__class__.__name__ == "ReduceLROnPlateau":
                     scheduler.step(test_loss)
                 elif scheduler.__class__.__name__ == "OneCycleLR":
+                    print("scheduler update passed over at the epoch level")
                     pass
                 else:
                     scheduler.step()
