@@ -139,6 +139,7 @@ class Trainer:
                 #     print("scheduler update passed over at the epoch level")
                 #     continue
                 else:
+                    print("updating scheduler...")
                     scheduler.step()
 
         return Record(

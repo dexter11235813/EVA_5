@@ -20,18 +20,19 @@ class LRRangeTest:
         self.trainloader = trainloader
         self.lr_ = []
         self.train_acc = []
+        self.step_size = (self.max_lr - self.min_lr) / self.epochs
 
     def range_lr_test(self):
         lr = self.min_lr
-        step_size = (self.max_lr - self.min_lr) / self.epochs
-        print(f"step size: {step_size}")
+
+        print(f"step size: {self.step_size}")
 
         for _ in range(0, self.epochs):
             model = copy.deepcopy(self.model)
             print(f"current_lr: {lr}")
             optimizer = optim.SGD(model.parameters(), lr=lr, weight_decay=0.05)
 
-            lr += step_size
+            lr += self.step_size
 
             model.train()
             correct = 0
