@@ -26,7 +26,9 @@ class LRRangeTest:
 
         for epoch in range(1, self.epochs + 1):
             model = copy.deepcopy(self.model)
+            print(f"current_lr: {lr}")
             optimizer = optim.SGD(model.parameters(), lr=lr)
+
             lr += (self.max_lr - self.min_lr) / epoch
 
             model.train()
@@ -46,6 +48,8 @@ class LRRangeTest:
                 correct += pred.eq(target.view_as(pred)).sum().item()
 
                 total += len(target)
+            print(f"train_accuracy: {100 * correct / total}")
+
             self.train_acc.append(100.0 * correct / total)
             self.lr_.append(optimizer.param_groups[0]["lr"])
 
