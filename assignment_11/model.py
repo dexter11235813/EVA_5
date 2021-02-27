@@ -126,10 +126,11 @@ class Trainer:
             print(f"current_lr: {clr}")
             self.LR.append(clr)
             if batch_scheduler:
-                self._train(train_loader, optimizer, device, loss_fn)
+
+                self._train(train_loader, optimizer, loss_fn)
             else:
                 print("passing scheduler inside _train...")
-                self._train(train_loader, optimizer, device, loss_fn, scheduler)
+                self._train(train_loader, optimizer, loss_fn, scheduler)
             test_loss = self._evaluate(test_loader, loss_fn)
             if scheduler:
                 if scheduler.__name__ == "ReduceLROnPlateau":
