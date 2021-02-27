@@ -88,6 +88,7 @@ class CustomNet(nn.Module):
         x = x + r2
         x = self.final_pool(x)
         x = self.flatten(x)
+        x = x.view(-1, 10)
         return F.log_softmax(x)
 
 
