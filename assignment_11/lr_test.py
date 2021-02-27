@@ -38,8 +38,8 @@ class LRRangeTest:
             correct = 0
             total = 0
 
-            for _, (data, target) in enumerate(
-                tqdm(self.trainloader, total=len(self.trainloader))
+            for _, (data, target) in tqdm(
+                enumerate(self.trainloader, total=len(self.trainloader))
             ):
                 data, target = data.to(config.DEVICE), target.to(config.DEVICE)
                 optimizer.zero_grad()

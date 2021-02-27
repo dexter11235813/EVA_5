@@ -118,29 +118,21 @@ class Trainer:
         optimizer,
         loss_fn,
         scheduler=None,
-        batch_scheduler=True,
+        batch_scheduler=False,
     ):
         for epoch in range(epochs):
             print(f"{epoch + 1} / {epochs}")
             clr = optimizer.param_groups[0]["lr"]
             print(f"current_lr: {clr}")
             self.LR.append(clr)
-            if not batch_scheduler:
-                print("passing scheduler inside _train...")
-                self._train(train_loader, optimizer, loss_fn, scheduler)
-            else:
-
-                self._train(train_loader, optimizer, loss_fn)
-            test_loss = self._evaluate(test_loader, loss_fn)
             if batch_scheduler:
-                if scheduler.__class__.__name__ == "ReduceLROnPlateau":
-                    scheduler.step(test_loss)
-                elif scheduler.__class__.__name__ == "OneCycleLR":
-                    print("scheduler update passed over at the epoch level")
-                    continue
-                else:
+                train_scheduler = scheduler
+                print("passing scheduler inside _train...")
+            self._train(train_loader, optimizer, loss_fn, scheduler=train_scheduler)
 
-                    scheduler.step()
+            test_loss = self._evaluate(test_loader, loss_fn)
+            if not batch_scheduler:
+                scheduler.step()
 
         return Record(
             self.train_acc, self.train_loss, self.test_acc, self.test_loss, self.LR
