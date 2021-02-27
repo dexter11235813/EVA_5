@@ -89,15 +89,16 @@ class CustomNet(nn.Module):
         x = self.final_pool(x)
         x = self.flatten(x)
         x = x.view(-1, 10)
-        return F.log_softmax(x)
+        return F.log_softmax(x, dim=-1)
 
 
 class Record:
-    def __init__(self, train_acc, train_loss, test_acc, test_loss):
+    def __init__(self, train_acc, train_loss, test_acc, test_loss, lr):
         self.train_acc = train_acc
         self.train_loss = train_loss
         self.test_acc = test_acc
         self.test_loss = test_loss
+        self.lr = lr
 
 
 class Trainer:
@@ -124,7 +125,7 @@ class Trainer:
             clr = optimizer.param_groups[0]["lr"]
             print(f"current_lr: {clr}")
             self.LR.append(clr)
-            if batch_scheduler:
+            if not batch_scheduler:
                 print("passing scheduler inside _train...")
                 self._train(train_loader, optimizer, loss_fn, scheduler)
             else:
@@ -136,11 +137,13 @@ class Trainer:
                     scheduler.step(test_loss)
                 elif scheduler.__class__.__name__ == "OneCycleLR":
                     print("scheduler update passed over at the epoch level")
-                    pass
+                    continue
                 else:
                     scheduler.step()
 
-        return Record(self.train_acc, self.train_loss, self.test_acc, self.test_loss)
+        return Record(
+            self.train_acc, self.train_loss, self.test_acc, self.test_loss, self.LR
+        )
 
     def _train(self, train_loader, optimizer, loss_fn, scheduler=None):
         self.model.train()

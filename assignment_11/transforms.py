@@ -14,8 +14,8 @@ class TrainTransforms:
                 ),
                 albumentations.RandomCrop(height=32, width=32, always_apply=True),
                 albumentations.HorizontalFlip(),
-                # albumentations.Rotate(2),
-                albumentations.Cutout(num_holes=2, p=0.6),
+                albumentations.Rotate((-3, 3)),
+                albumentations.Cutout(num_holes=1, p=0.6),
                 albumentations.Normalize(
                     mean=[0.4914, 0.48216, 0.44653], std=[0.2023, 0.1994, 0.2010]
                 ),
