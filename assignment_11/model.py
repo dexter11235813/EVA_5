@@ -126,10 +126,10 @@ class Trainer:
             self.LR.append(clr)
             if batch_scheduler:
                 print("passing scheduler inside _train...")
-                self._train(train_loader, optimizer, loss_fn)
+                self._train(train_loader, optimizer, loss_fn, scheduler)
             else:
 
-                self._train(train_loader, optimizer, loss_fn, scheduler)
+                self._train(train_loader, optimizer, loss_fn)
             test_loss = self._evaluate(test_loader, loss_fn)
             if scheduler:
                 if scheduler.__class__.__name__ == "ReduceLROnPlateau":
@@ -155,6 +155,7 @@ class Trainer:
             loss.backward()
             optimizer.step()
             if scheduler:
+                print("updating OCLR scheduler")
                 scheduler.step()
             pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
