@@ -132,7 +132,7 @@ class Trainer:
                 self._train(train_loader, optimizer, loss_fn, scheduler)
             test_loss = self._evaluate(test_loader, loss_fn)
             if scheduler:
-                if scheduler.__name__ == "ReduceLROnPlateau":
+                if scheduler.__class__.__name__ == "ReduceLROnPlateau":
                     scheduler.step(test_loss)
                 else:
                     scheduler.step()
