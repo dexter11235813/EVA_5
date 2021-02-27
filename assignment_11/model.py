@@ -89,7 +89,7 @@ class CustomNet(nn.Module):
         x = self.final_pool(x)
         x = self.flatten(x)
         x = x.view(-1, 10)
-        return F.log_softmax(x, dim=-1)
+        return x
 
 
 class Record:
@@ -111,27 +111,18 @@ class Trainer:
         self.LR = []
 
     def train(
-        self,
-        epochs,
-        train_loader,
-        test_loader,
-        optimizer,
-        loss_fn,
-        scheduler=None,
-        batch_scheduler=False,
+        self, epochs, train_loader, test_loader, optimizer, loss_fn, scheduler=None,
     ):
         for epoch in range(epochs):
             print(f"{epoch + 1} / {epochs}")
             clr = optimizer.param_groups[0]["lr"]
             print(f"current_lr: {clr}")
             self.LR.append(clr)
-            if batch_scheduler:
-                train_scheduler = scheduler
-                print("passing scheduler inside _train...")
-            self._train(train_loader, optimizer, loss_fn, scheduler=train_scheduler)
 
-            test_loss = self._evaluate(test_loader, loss_fn)
-            if not batch_scheduler:
+            self._train(train_loader, optimizer, loss_fn)
+
+            self._evaluate(test_loader)
+            if scheduler:
                 scheduler.step()
 
         return Record(
@@ -165,7 +156,7 @@ class Trainer:
             f" Training loss = {train_loss * 1.0 / len(train_loader.dataset)}, Training Accuracy : {100.0 * correct / len(train_loader.dataset)}"
         )
 
-    def _evaluate(self, test_loader, loss_fn):
+    def _evaluate(self, test_loader):
         self.model.eval()
         test_loss = 0
         correct = 0
@@ -175,7 +166,7 @@ class Trainer:
                 enumerate(test_loader), total=len(test_loader)
             ):
                 data, target = data.to(config.DEVICE), target.to(config.DEVICE)
-                output = self.model(data)
+                output = F.log_softmax(self.model(data), dim=1)
                 test_loss += torch.nn.functional.nll_loss(
                     output, target, reduction="sum"
                 ).item()  # sum up batch loss
