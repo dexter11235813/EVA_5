@@ -29,7 +29,7 @@ class LRRangeTest:
         for _ in range(0, self.epochs):
             model = copy.deepcopy(self.model)
             print(f"current_lr: {lr}")
-            optimizer = optim.SGD(model.parameters(), lr=lr)
+            optimizer = optim.SGD(model.parameters(), lr=lr, weight_decay=-0.05)
 
             lr += step_size
 
