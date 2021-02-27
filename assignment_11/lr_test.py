@@ -23,13 +23,15 @@ class LRRangeTest:
 
     def range_lr_test(self):
         lr = self.min_lr
+        step_size = (self.max_lr - self.min_lr) / self.epochs
+        print(f"step size: {step_size}")
 
-        for epoch in range(1, self.epochs + 1):
+        for _ in range(0, self.epochs):
             model = copy.deepcopy(self.model)
             print(f"current_lr: {lr}")
             optimizer = optim.SGD(model.parameters(), lr=lr)
 
-            lr += (self.max_lr - self.min_lr) / epoch
+            lr += step_size
 
             model.train()
             correct = 0
