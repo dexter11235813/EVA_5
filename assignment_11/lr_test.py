@@ -24,8 +24,8 @@ class LRRangeTest:
     def range_lr_test(self):
         lr = self.min_lr
 
-        for epoch in range(self.epoches):
-            model = copy.deepcopy(CustomNet)
+        for epoch in range(1, self.epochs + 1):
+            model = copy.deepcopy(self.model)
             optimizer = optim.SGD(model.parameters(), lr=lr)
             lr += (self.max_lr - self.min_lr) / epoch
 
@@ -34,9 +34,9 @@ class LRRangeTest:
             total = 0
 
             for _, (data, target) in enumerate(
-                tqdm(self.trainloader), total=len(self.trainloader)
+                tqdm(self.trainloader, total=len(self.trainloader))
             ):
-                data, target = data.to(config.device), target.to(config.device)
+                data, target = data.to(config.DEVICE), target.to(config.DEVICE)
                 optimizer.zero_grad()
                 out = model(data)
                 loss = self.criterion(out, target)
